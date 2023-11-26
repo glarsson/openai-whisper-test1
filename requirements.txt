@@ -1,0 +1,6 @@
+openai
+colorama
+sounddevice
+numpy
+scipy
+keyboard
