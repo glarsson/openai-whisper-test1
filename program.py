@@ -1,8 +1,8 @@
 from openai import OpenAI
 from colorama import Fore
-import sounddevice as sd
+#import sounddevice as sd
 import numpy as np
-from scipy.io.wavfile import write
+#from scipy.io.wavfile import write
 import keyboard
 
 # Read API key from a file
@@ -29,43 +29,11 @@ Our two experts are {sme1_specialization} and {sme2_specialization}
 print(base_premise)
 
 # Get user input
-# user_input = input("Please enter your question: ")
-
-# Create an input stream to record audio
-stream = sd.InputStream(callback=callback, channels=channels, samplerate=sample_rate)
-stream.start()
-print("Recording your question, press 's' to stop.")
-
-# Wait for 'q' keypress to stop recording
-while True:
-    if keyboard.is_pressed('s'):  # if key 'q' is pressed 
-        print('Stop recording.')
-        break  # finish the loop
-
-stream.stop()
-print("Recording finished.")
-
-# Save the audio to a file
-write('output.wav', sample_rate, buffer.astype(np.int16))  # Save the audio to a file
-buffer = np.array([])  # Clear the buffer
-
-# Transcribe the audio with the Whisper API
-audio_file= open("output.wav", "rb")
-audio_response = client.audio.transcriptions.create(
-  model="whisper-1", 
-  file=audio_file,
-  response_format="text"
-)
-
-user_input = audio_response
-print(f"{Fore.WHITE}Whisper things you said: {user_input}{Fore.RESET}\n")
+user_input = input("Please enter your question: ")
 
 
-
-
-
-
-
+# we're gonna start to do some whisper stuff later, it seems troublesome to get audio recorded in python and windows for some reason.
+# print(f"{Fore.WHITE}Whisper things you said: {user_input}{Fore.RESET}\n")
 
 # first sme response
 sme1_response = client.chat.completions.create(
@@ -108,6 +76,8 @@ summarizer_response_text = summarizer_response.choices[0].message.content
 print(f"{Fore.YELLOW}The summarizer says: {summarizer_response_text}{Fore.RESET}\n")
 
 # init final answer
+
+# the final answer assistant is pretty useless - the summarizer is doing a better job so it's kind of redundant right now.
 
 #final_answer_init = "Your job is now to consider the expert opinions and the summarizer's condensed version of them and come up with a final answer to the question."
 #final_answer_prompt = f"The {sme1_specialization} says: {sme1_response_text} The {sme2_specialization} says: {sme2_response_text} The summarizer says: {summarizer_response_text}"
