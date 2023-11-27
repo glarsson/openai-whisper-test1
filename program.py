@@ -75,7 +75,21 @@ summarizer_response = client.chat.completions.create(
 summarizer_response_text = summarizer_response.choices[0].message.content
 print(f"{Fore.YELLOW}The summarizer says: {summarizer_response_text}{Fore.RESET}\n")
 
-# init final answer
+# initialize conversation
+# init_conversation = "please summarize the following two statements as condensed as possible:"
+conversation_response = client.chat.completions.create(
+  model="gpt-3.5-turbo-16k-0613",
+  max_tokens=4096,
+  messages=[
+    {"role": "system", "content": "Please discuss amongst yourselves, the answers provided:" + summarizer_response_text},
+    {"role": "assistant", "content": sme1_specialization + sme1_response_text},
+    {"role": "assistant", "content": sme2_specialization + sme2_response_text}
+  ]
+)
+
+conversation_response_text = conversation_response.choices[0].message.content
+print(f"{Fore.RED}The conversational response is: {conversation_response_text}{Fore.RESET}\n")
+
 
 # the final answer assistant is pretty useless - the summarizer is doing a better job so it's kind of redundant right now.
 
