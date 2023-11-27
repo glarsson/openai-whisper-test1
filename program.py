@@ -12,11 +12,11 @@ with open('secret_apikey.txt', 'r') as file:
 client = OpenAI(api_key=api_key)
 
 # Our first AI 'assistant' role and its speciality
-sme1_specialization = "psychologist"
+sme1_specialization = "ninja"
 openai_sme1 = f"As an expert {sme1_specialization}, this is two sentences on that topic:"
 
 # Our second AI 'assistant' role and its speciality
-sme2_specialization = "shaman"
+sme2_specialization = "samurai"
 openai_sme2 = f"As an expert {sme2_specialization}, this is two sentences on that topic:"
 
 # The base premise of what we are trying to do
@@ -79,11 +79,11 @@ print(f"{Fore.YELLOW}The summarizer says: {summarizer_response_text}{Fore.RESET}
 # init_conversation = "please summarize the following two statements as condensed as possible:"
 conversation_response = client.chat.completions.create(
   model="gpt-3.5-turbo-16k-0613",
-  max_tokens=4096,
+  max_tokens=2048,
   messages=[
     {"role": "system", "content": "Please discuss amongst yourselves, the answers provided:" + summarizer_response_text},
-    {"role": "assistant", "content": sme1_specialization + sme1_response_text},
-    {"role": "assistant", "content": sme2_specialization + sme2_response_text}
+    {"role": "assistant", "content": sme1_response_text},
+    {"role": "assistant", "content": sme2_response_text}
   ]
 )
 
