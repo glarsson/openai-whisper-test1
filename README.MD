@@ -1,0 +1,1 @@
+You're gonna need to download and install CUDA 11.8, and cuDNN v8.1.0 (January 26th, 2021), for CUDA 11.0,11.1 and 11.2 for this to work.
