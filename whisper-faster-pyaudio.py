@@ -33,7 +33,7 @@ audio_indices = [0]
 audio_scaling_factor = 3.0  # Adjust this as needed
 
 # whisper-faster inits
-model_size = "medium"
+model_size = "small"
 model = WhisperModel(model_size, device="cuda", compute_type="int8_float16")
 
 # PyAudio setup
@@ -117,19 +117,19 @@ def convert_array_to_wave():
 def transcribe_audio():
     transcriber_file_index = 0
     while True:
-        print("index %s" % (transcriber_file_index))
+        #print("index %s" % (transcriber_file_index))
 
         # Create a temporary "pointer" using the current index
         temp_file_name = f"output/output_{transcriber_file_index}.wav"
 
         # check that temp_file_name exists on the file system, otherwise wait for it to be written
         while not os.path.exists(temp_file_name) or os.path.getsize(temp_file_name) < 10240:
-            time.sleep(0.5)
+            time.sleep(0.2)
 
-        #print(f"Found audio file {temp_file_name}. Transcribing...")
+        #print(f"Found audio file {temp_file_name}.")
 
         # Transcribe the audio
-        segments, info = model.transcribe(temp_file_name, beam_size=5)
+        segments, info = model.transcribe(temp_file_name, beam_size=3)
 
         #print(f"segments loaded model and file {temp_file_name}. Transcribing")
 
@@ -153,7 +153,9 @@ def transcribe_audio():
         transcriber_file_index += 1
         
         # Print the transcription string
-        print(Fore.GREEN + f"{transcription_string}" + Fore.RESET)
+        unwanted_words = ["you", "Thank you."]
+        if not any(word in transcription_string and transcription_string.count(word) == 1 for word in unwanted_words):
+            print(Fore.YELLOW + f"[voice] {transcription_string}" + Fore.RESET)
 
 
 

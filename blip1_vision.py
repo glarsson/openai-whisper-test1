@@ -31,12 +31,12 @@ for i, device_name in enumerate(device_names):
 cam_device_index = 3
 
 # large model
-processor = BlipProcessor.from_pretrained("Salesforce/blip-image-captioning-large")
-model = BlipForConditionalGeneration.from_pretrained("Salesforce/blip-image-captioning-large", torch_dtype=torch.float16).to("cuda")
+#processor = BlipProcessor.from_pretrained("Salesforce/blip-image-captioning-large")
+#model = BlipForConditionalGeneration.from_pretrained("Salesforce/blip-image-captioning-large", torch_dtype=torch.float16).to("cuda")
 
 # base model
-#processor = BlipProcessor.from_pretrained("Salesforce/blip-image-captioning-base")
-#model = BlipForConditionalGeneration.from_pretrained("Salesforce/blip-image-captioning-base", torch_dtype=torch.float16).to("cuda")
+processor = BlipProcessor.from_pretrained("Salesforce/blip-image-captioning-base")
+model = BlipForConditionalGeneration.from_pretrained("Salesforce/blip-image-captioning-base", torch_dtype=torch.float16).to("cuda")
 
 # Create a lock for the webcam writing process
 lock = threading.Lock()
@@ -51,7 +51,7 @@ def image_to_text():
     while True:
         while True:
             if os.path.exists(image_path) and os.stat(image_path).st_size > 0:
-                time.sleep(0.5)
+                time.sleep(0.2)
                 raw_image = Image.open(image_path).convert('RGB')
                 break
             else:
@@ -62,9 +62,9 @@ def image_to_text():
         #print("inputs...")
         inputs = processor(raw_image, return_tensors="pt").to("cuda", torch.float16)
         #print("output...")
-        out = model.generate(**inputs, max_new_tokens=50)
+        out = model.generate(**inputs, max_new_tokens=20)
         #print("image description should come here:")
-        print(Fore.GREEN + processor.decode(out[0], skip_special_tokens=True) + Fore.RESET)
+        print(Fore.GREEN + "[vision] " + processor.decode(out[0], skip_special_tokens=True) + Fore.RESET)
         #print("done!")
 
         # Delete the file after processing
