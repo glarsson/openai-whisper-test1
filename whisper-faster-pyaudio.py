@@ -117,7 +117,7 @@ def convert_array_to_wave():
 def transcribe_audio():
     transcriber_file_index = 0
     while True:
-        #print("Starting a transcribe audio run at internal index %s" % (transcriber_file_index))
+        print("index %s" % (transcriber_file_index))
 
         # Create a temporary "pointer" using the current index
         temp_file_name = f"output/output_{transcriber_file_index}.wav"
@@ -143,11 +143,12 @@ def transcribe_audio():
         for segment in segments:
             transcriptions.append("%s" % (segment.text))
 
+
         # Join the words into a single string
-        transcription_string = ' '.join(transcriptions)
+        
 
         #print(f"Transcription completed for internal index {transcriber_file_index}.")
-
+        transcription_string = ' '.join(transcriptions)
         # increment local index
         transcriber_file_index += 1
         
