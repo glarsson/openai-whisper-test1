@@ -6,3 +6,4 @@ scipy
 keyboard
 wave
 faster-whisper
+pyaudio

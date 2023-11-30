@@ -133,3 +133,5 @@ dmypy.json
 /test.py
 /game_rules.txt
 /output.wav
+/output/
+

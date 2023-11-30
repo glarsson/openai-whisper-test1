@@ -7,6 +7,8 @@ from scipy.io.wavfile import write
 import keyboard
 import wave
 from faster_whisper import WhisperModel
+import time
+import threading
 
 
 # Read API key from a file
@@ -28,6 +30,7 @@ device = device_info['name']
 sample_rate = 44100  # Sample rate in Hz
 duration = 5.0  # Duration in seconds
 
+'''
 # Record audio
 print(f"Recording audio from {device} for {duration} seconds...")
 audio = sd.rec(int(sample_rate * duration), samplerate=sample_rate, channels=2)
@@ -50,7 +53,7 @@ if num_frames > 0:
     print("The file contains sound.")
 else:
     print("The file does not contain sound.")
-
+'''
 
 # faster-whisper stuff
 
@@ -67,6 +70,7 @@ model = WhisperModel(model_size, device="cuda", compute_type="int8_float16")
 # or run on CPU with INT8
 # model = WhisperModel(model_size, device="cpu", compute_type="int8")
 
+'''
 segments, info = model.transcribe("output.wav", beam_size=5)
 
 print("Detected language '%s' with probability %f" % (info.language, info.language_probability))
@@ -81,7 +85,34 @@ segments, _ = model.transcribe("output.wav", word_timestamps=True)
 for segment in segments:
     for word in segment.words:
         print("[%.2fs -> %.2fs] %s" % (word.start, word.end, word.word))
+'''
 
+# Set the duration of each audio segment
+segment_duration = 1.0  # Duration in seconds
+
+def record_and_transcribe():
+    while True:
+        # Record audio
+        audio = sd.rec(int(sample_rate * segment_duration), samplerate=sample_rate, channels=2)
+        sd.wait()  # Wait for the recording to finish
+
+        # Convert the audio data to a PCM format
+        audio_pcm = np.int16(audio / np.max(np.abs(audio)) * 32767)
+
+        # Save the audio to a temporary wave file
+        write('temp.wav', sample_rate, audio_pcm)
+
+        # Transcribe the audio
+        segments, _ = model.transcribe('temp.wav')
+        segments = list(segments)  # The transcription will actually run here.
+
+        for segment in segments:
+            if segment.words is not None:  # Add this check
+                for word in segment.words:
+                  print("[%.2fs -> %.2fs] %s" % (word.start, word.end, word.word))
+
+# Start the recording and transcription in a separate thread
+threading.Thread(target=record_and_transcribe).start()
 
 
 
