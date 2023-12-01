@@ -1,9 +1,9 @@
 import os
 import threading
 
-from audio_operations import convert_array_to_wave
-from audio_transcription import transcribe_audio
-from audio_operations import record_audio
+from operations.audio_operations import convert_array_to_wave
+from operations.audio_transcription import transcribe_audio
+from operations.audio_operations import record_audio
 
 # clear the output folder before every run
 for file in os.listdir("output"):

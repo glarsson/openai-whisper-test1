@@ -2,14 +2,13 @@ import time
 import numpy as np
 import pyaudio
 from scipy.io.wavfile import write
-import os
 import atexit
 
 # Set the sample rate and duration
-sample_rate = 22000  # Sample rate in Hz
+sample_rate = 48000  # Sample rate in Hz
 
 # loudness scaling factor - more is louder
-audio_scaling_factor = 3.0  # Adjust this as needed
+audio_scaling_factor = 5.0  # Adjust this as needed
 
 # Setting this really has a big impact on the accuuracy of the transcription but also the speed of output - it doesn't stream.
 # 3 seconds is acceptable I think for normal conversational rythm, 
@@ -27,6 +26,9 @@ audio_array_index = 0
 
 # Initialize the last_transcribed_index as 0
 last_transcribed_index = 0
+
+global previous_audio
+previous_audio = []
 
 # pyaudio setup
 p = pyaudio.PyAudio()
@@ -95,6 +97,10 @@ def convert_array_to_wave():
         start_index = audio_indices[last_transcribed_index]
         end_index = audio_indices[last_transcribed_index + 1]
         audio_data = audio_buffer[start_index:end_index]
+        
+        # Prepend previous_audio to audio_data if last_transcribed_index > 0
+        if last_transcribed_index > 0:
+            audio_data = previous_audio + audio_data
 
         #print("Extracted audio data from buffer. Writing to file...")
 
