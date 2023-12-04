@@ -1,7 +1,7 @@
 import threading
 from colorama import Fore
 
-from operations.image_operations import webcam_capture
+from operations.image_capture import webcam_capture
 from operations.image_transcription import image_to_text
 
 

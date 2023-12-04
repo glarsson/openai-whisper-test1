@@ -16,20 +16,16 @@ client = OpenAI(api_key=api_key)
 gpt_model = "gpt-3.5-turbo-1106"
 
 # Our first AI 'assistant' role and its speciality
-sme1_specialization = "film critic"
+sme1_specialization = "English language professor"
 # The base premise of what we are trying to do
-base_premise_vision = f"""
-{sme1_specialization}. You are going to analyze the text content after "[vision] " (then ignore that beginning of every line) outputten by another AI and try to interpret what the general vibe 
-of the video is through the text. Try to convey through these small snapshots of information on each line what the arist is trying for.
-You will then provide a detailed summary of what you think conceptually about the video (that you analyzed in text form), and it's qualities and finally what the message of the video is.
-"""
+base_premise_vision = f"""{sme1_specialization}. You are going to provide me with as much data as you possibly can in the format in which I desire."""
+
 # Our second AI 'assistant' role and its speciality
-sme2_specialization = "music critic"
-base_premise_voice = f"""
-{sme2_specialization}. You are going to analyze the content after "[voice] " (then ignore that beginning of every line) outputten by another AI and try to interpret what the general idea 
-of the text is trying to convey through these small snapshots of information on each line. You will then provide a detailed summary of what you think
-conceptually about the text, and it's qualities and finally what the message is.
-"""
+sme2_specialization = "head of the English department at a prestigious university"
+base_premise_rector = f"""{sme2_specialization}. You are going to analyze the content (words and classification) from the English language professor 
+and provide feedback for him to research further if not all goals are met - we are looking to get at least 500 words in each category."""
+
+goal = "We are looking to get at least 500 english non-duplicated words categorized in terms of how generally hostile or friendly they are, i.e. from Very Positive, Positive, Neutral, Negative and Very Negative"
 
 # print(base_premise)
 
@@ -42,7 +38,7 @@ conceptually about the text, and it's qualities and finally what the message is.
 
 ####
 ####
-
+'''
 # Get vision content from file
 with open('output/vision.txt', 'r', encoding='utf-8') as file:
     vision_analysis = file.read().strip()
@@ -61,6 +57,8 @@ sme1_response = client.chat.completions.create(
 
 sme1_response_text = sme1_response.choices[0].message.content
 print(f"{Fore.CYAN}The {sme1_specialization} says: {sme1_response_text}{Fore.RESET}\n")
+'''
+
 
 # Get voice content from file
 with open('output/voice.txt', 'r', encoding='utf-8') as file:
@@ -89,7 +87,8 @@ summarizer_response = client.chat.completions.create(
   max_tokens=1024,
   messages=[
     {"role": "system", "content": sme1_response_text + sme2_response_text,
-     "role": "user:", "content": base_premise
+     "role": "assistant", "content": "You will take both inputs from the two previous AI's and summarize them into a condensed final summary.",
+     "role": "user", "content": sme1_response_text + sme2_response_text
     }
   ]
 )
