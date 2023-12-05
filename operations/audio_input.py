@@ -3,6 +3,8 @@ import numpy as np
 import pyaudio
 from scipy.io.wavfile import write
 import atexit
+import audioop
+
 
 # Set the sample rate and duration
 sample_rate = 48000  # Sample rate in Hz

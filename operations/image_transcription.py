@@ -5,11 +5,14 @@ from colorama import Fore
 import torch
 from PIL import Image
 import logging
+from transformers import MarianMTModel, MarianTokenizer
+
+
 
 # Create a custom logger
 logger_image_to_text = logging.getLogger(__name__)
 # Set the logger's level to INFO
-logger_image_to_text.setLevel(logging.INFO)
+logger_image_to_text.setLevel(logging.ERROR)
 # Create handlers
 c_handler = logging.FileHandler('log.txt')
 c_handler.setLevel(logging.INFO)
@@ -20,12 +23,12 @@ c_handler.setFormatter(c_format)
 logger_image_to_text.addHandler(c_handler)
 
 # large model
-processor = BlipProcessor.from_pretrained("Salesforce/blip-image-captioning-large")
-model = BlipForConditionalGeneration.from_pretrained("Salesforce/blip-image-captioning-large", torch_dtype=torch.float16).to("cuda")
+#processor = BlipProcessor.from_pretrained("Salesforce/blip-image-captioning-large")
+#model = BlipForConditionalGeneration.from_pretrained("Salesforce/blip-image-captioning-large", torch_dtype=torch.float16).to("cuda")
 
 # base model
-#processor = BlipProcessor.from_pretrained("Salesforce/blip-image-captioning-base")
-#model = BlipForConditionalGeneration.from_pretrained("Salesforce/blip-image-captioning-base", torch_dtype=torch.float16).to("cuda")
+processor = BlipProcessor.from_pretrained("Salesforce/blip-image-captioning-base")
+model = BlipForConditionalGeneration.from_pretrained("Salesforce/blip-image-captioning-base", torch_dtype=torch.float16).to("cuda")
 
 def image_to_text():
     poll_interval = 0.1  # Poll every 100ms
@@ -36,7 +39,7 @@ def image_to_text():
     while True:
         while True:
             if os.path.exists(image_path) and os.stat(image_path).st_size > 0:
-                time.sleep(0.2)
+                time.sleep(0.1)
                 raw_image = Image.open(image_path).convert('RGB')
                 break
             else:
@@ -48,7 +51,7 @@ def image_to_text():
 
         # Unconditional image captioning
         inputs = processor(raw_image, return_tensors="pt").to("cuda", torch.float16)
-        out = model.generate(**inputs, max_new_tokens=30)
+        out = model.generate(**inputs, max_new_tokens=20)
         current_output = "[vision]" + processor.decode(out[0], skip_special_tokens=True) + "\n"
 
         # Stop the timer

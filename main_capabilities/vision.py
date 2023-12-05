@@ -1,6 +1,9 @@
 import threading
 from colorama import Fore
 
+import sys
+sys.path.append('C:\SOURCE\GERRY\openai-whisper-test1')
+
 from operations.image_capture import webcam_capture
 from operations.image_transcription import image_to_text
 
